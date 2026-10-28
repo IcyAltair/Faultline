@@ -1,0 +1,5 @@
+# Step 3: Isolation Forest detector (file_sd target, picked up without a Prometheus restart)
+- targets: ["ml-detector:9200"]
+  labels:
+    job: ml-detector
+    layer: ml

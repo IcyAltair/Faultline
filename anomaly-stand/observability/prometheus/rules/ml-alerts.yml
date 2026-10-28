@@ -1,0 +1,42 @@
+# Step 3: alerts on top of the ML detector metrics.
+# Labels mirror the baseline rules (detector: baseline) so Grafana can compare both detectors.
+groups:
+  - name: ml-detector
+    interval: 15s
+    rules:
+      # The detector already debounces (k-of-n windows), so no extra `for:` here
+      - alert: MLAnomalyDetected
+        expr: max(nginx_anomaly_alert) == 1
+        labels:
+          severity: warning
+          detector: isolation_forest
+        annotations:
+          summary: "Isolation Forest: anomalous nginx traffic"
+          description: >-
+            Score {{ with query "max(nginx_anomaly_score)" }}{{ . | first | value | printf "%.3f" }}{{ end }}
+            >= threshold {{ with query "max(nginx_anomaly_threshold)" }}{{ . | first | value | printf "%.3f" }}{{ end }}.
+            Details: http://localhost:9200/api/alerts
+
+      - alert: MLDetectorDown
+        expr: up{job="ml-detector"} == 0
+        for: 2m
+        labels: { severity: critical, detector: isolation_forest }
+        annotations:
+          summary: "ML detector is not scraped"
+          description: "Prometheus cannot reach ml-detector:9200 for 2 minutes."
+
+      - alert: MLDetectorStalled
+        expr: time() - max(nginx_anomaly_last_window_timestamp_seconds) > 120
+        for: 1m
+        labels: { severity: warning, detector: isolation_forest }
+        annotations:
+          summary: "ML detector stopped scoring windows"
+          description: "No complete window for >2 min (nginx log not written or tailer stuck)."
+
+      - alert: MLModelMissing
+        expr: max(nginx_anomaly_model_loaded) == 0 and max(nginx_anomaly_training_in_progress) == 0
+        for: 30m
+        labels: { severity: info, detector: isolation_forest }
+        annotations:
+          summary: "No Isolation Forest model loaded"
+          description: "Run `make train` in anomaly-stand/ml or wait for AUTO_TRAIN."
