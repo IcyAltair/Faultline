@@ -1,4 +1,4 @@
-# LogAD
+# Faultline
 Anomaly Detection in logs
 
 # Anomaly Detection Stand — Step 1: Business Layer

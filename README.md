@@ -1,2 +1,2 @@
-# LogAD
+# Faultline
 Anomaly Detection in logs
