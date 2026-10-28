@@ -220,3 +220,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 */data/
+anomaly-stand/observability/grafana/plugins/*
+!anomaly-stand/observability/grafana/plugins/.gitkeep
