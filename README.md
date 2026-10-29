@@ -114,7 +114,7 @@ All layers share one external Docker network, **`anomaly-stand-net`**, which ste
 
 ## ⚡ Quick start
 ```bash
-git clone https://github.com/IcyAltair/Faultline.git &amp;&amp; cd Faultline
+git clone https://github.com/IcyAltair/Faultline.git && cd Faultline
 chmod +x anomaly-stand.sh
 ./anomaly-stand.sh up --fast
 
