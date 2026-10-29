@@ -112,6 +112,25 @@ All layers share one external Docker network, **`anomaly-stand-net`**, which ste
 
 ---
 
+## ⚡ Quick start
+```bash
+git clone https://github.com/IcyAltair/Faultline.git &amp;&amp; cd Faultline
+chmod +x anomaly-stand.sh
+./anomaly-stand.sh up --fast
+
+# all 4 layers, anomalies within minutes
+./anomaly-stand.sh check
+
+# smoke checks
+./anomaly-stand.sh train
+
+# train Isolation Forest now instead of waiting for AUTO_TRAIN
+```
+
+Run `./anomaly-stand.sh help` to see every command. The steps below do the same thing by hand, one layer at a time.
+
+---
+
 ## 🚀 Step-by-step setup
 
 ### 📥 Step 0. Clone
@@ -379,10 +398,10 @@ What the panel shows:
 * 🔍 **"Why" sidebar**: the top features by robust z-score (for example `ratio_5xx z=+14`).
 ```bash
 cd ../observability
-docker compose up -d --force-recreate grafana
+docker compose -f docker-compose-plugin.yml up -d --force-recreate grafana
 
 # plugins are loaded when Grafana starts
-docker compose logs grafana | grep -i faultline
+docker compose logs grafana | grep -i faultline   # expect "Plugin registered"
 
 # expect "Plugin registered" (the unsigned warning is normal)
 ```
